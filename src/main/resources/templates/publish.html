@@ -2,12 +2,12 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>opendragon 社区主页</title>
+    <title>发布</title>
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/bootstrap-theme.min.css">
     <script src="js/bootstrap.min.js"></script>
 </head>
-<body>
+<body style="background-color: #efefef">
 <nav class="navbar navbar-default">
     <div class="container-fluid">
         <div class="navbar-header">
@@ -43,5 +43,39 @@
         </div>
     </div>
 </nav>
+
+<div class="container-fluid" style="margin: 30px;background-color: white">
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-9">
+            <h2><span class="glyphicon glyphicon-plus" aria-hidden="true">发起</span></h2>
+            <hr/>
+            <form action="/publish" method="post">
+                <div class="form-group alert alert-danger" role="alert" th:if="${error}!=null">
+                    <div th:text="${error}"></div>
+                </div>
+                <div class="form-group">
+                    <label>问题标题（简明扼要）：</label>
+                    <input type="text" class="form-control" id="title" name="title" th:value="${title}" placeholder="问题标题" >
+                </div>
+                <div class="form-group">
+                    <label>问题补充（必填，请参照右侧提示）：</label>
+                    <textarea class="form-control" id="description" name="description" cols="30" rows="10" th:text="${description}"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>添加标签：</label>
+                    <input type="text" class="form-control" id="tag" name="tag" th:value="${tag}" placeholder="输入标签，以逗号隔开">
+                </div>
+                <button type="submit" class="btn btn-success " style="float: right;margin: 15px">Submit</button>
+            </form>
+
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-3">
+            <H3>问题发起指南</H3>
+            • 问题标题：请用精简的语言描述您发布的问题，不超过25字<br/>
+            • 问题补充：详细描述您的问题内容，并确保问题描述清晰直观，并提供一些相关的资料<br/>
+            • 选择标签：选择一个或多个合适的标签，用逗号隔开，每个标签不超过10个字<br/>
+        </div>
+    </div>
+</div>
 </body>
 </html>

@@ -2,6 +2,7 @@ package com.opendragon.community.controller;
 
 import com.opendragon.community.mapper.UserMapper;
 import com.opendragon.community.model.User;
+import com.opendragon.community.util.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,17 +22,12 @@ public class IndexController {
 
     @GetMapping("/")
     public String index(HttpServletRequest request){
-        Cookie[] cookies = request.getCookies();
-        for (Cookie cookie : cookies) {
-            if(cookie.getName().equals("token")){
-                User user = userMapper.findByToken(cookie.getValue());
-                if(user != null){
-                    request.getSession().setAttribute("user", user);
-                }
-                break;
-            }
+        User user = Utils.CheckUserToken(request, userMapper);
 
+        if(user != null){
+            request.getSession().setAttribute("user", user);
         }
+
         return "index";
     }
 }
