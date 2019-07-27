@@ -20,7 +20,15 @@ public interface QuestionMapper {
             "values(#{title},#{description}, #{gmtCreate}, #{gmtModified}, #{creator}, #{tag})")
     void insertQueston(Question question);
 
-    @Select("select title, description, creator, comment_count, view_count, gmt_modified from question")
+    @Select("select title, description, creator, comment_count, view_count, gmt_modified " +
+            "from question order by gmt_modified desc")
     List<Question> list();
+
+    @Select("select title, description, creator, comment_count, view_count, gmt_modified " +
+            "from question order by gmt_modified desc limit #{offset}, #{rows}")
+    List<Question> limitList(@Param("offset") long offset,@Param("rows") long rows);
+
+    @Select("select count(1) from question")
+    long count();
 }
 

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title th:text="${sectionName}"></title>
+    <script src="/js/jquery-3.4.1.min.js"></script>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="/css/community.css">
+    <script src="/js/bootstrap.min.js"></script>
+</head>
+<body style="background-color: #efefef">
+<div th:insert="navigation :: nav"></div>
+<div class="container-fluid" style="margin: 30px;background-color: white">
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-9">
+            <h2><span class="glyphicon glyphicon-list" aria-hidden="true" th:text="${sectionName}"></span></h2>
+            <hr/>
+
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-3">
+            <h2>热门话题</h2>
+        </div>
+    </div>
+</div>
+</body>
+</html>
