@@ -1,14 +1,14 @@
-package com.opendragon.community.model;
+package com.opendragon.community.dto;
 
+import com.opendragon.community.model.User;
 import lombok.Data;
 
 /**
- * @author opend
- * @version 1.0
- * @date 2019/7/26
+ * @Author opend
+ * @Date 2019/7/26
  */
 @Data
-public class Question {
+public class QuestionDTO {
     private int id;
     private String title;
     private String description;
@@ -19,5 +19,5 @@ public class Question {
     private int viewCount;
     private int likeCount;
     private String tag;
+    private User user;
 }
-

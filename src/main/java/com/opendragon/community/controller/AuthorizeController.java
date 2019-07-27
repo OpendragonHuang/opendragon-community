@@ -63,6 +63,7 @@ public class AuthorizeController implements Serializable {
             user.setAccountId(String.valueOf(githubUser.getId()));
             user.setGmtCreate(System.currentTimeMillis());
             user.setGmtModified(user.getGmtCreate());
+            user.setAvatarUrl(githubUser.getAvatarUrl());
             userMapper.insertUser(user);
             response.addCookie(new Cookie("token", token));
         }else{
