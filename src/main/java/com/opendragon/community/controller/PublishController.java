@@ -6,6 +6,7 @@ import com.opendragon.community.model.Question;
 import com.opendragon.community.model.User;
 import com.opendragon.community.service.QuestionService;
 import com.opendragon.community.util.Utils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -87,6 +88,9 @@ public class PublishController {
             question.setCreator(user.getId());
             question.setGmtCreate(System.currentTimeMillis());
             question.setGmtModified(question.getGmtCreate());
+            question.setCommentCount(0);
+            question.setLikeCount(0);
+            question.setViewCount(0);
         }else{
             question.setGmtModified(System.currentTimeMillis());
         }
