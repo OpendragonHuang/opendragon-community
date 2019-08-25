@@ -20,7 +20,6 @@ public class Utils {
                     User user = userMapper.findByToken(cookie.getValue());
                     return user;
                 }
-
             }
         }
         return null;

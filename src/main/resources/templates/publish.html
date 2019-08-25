@@ -3,10 +3,10 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>发布</title>
-    <script src="js/jquery-3.4.1.min.js"></script>
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/bootstrap-theme.min.css">
-    <script src="js/bootstrap.min.js"></script>
+    <script src="/js/jquery-3.4.1.min.js"></script>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/bootstrap-theme.min.css">
+    <script src="j/s/bootstrap.min.js"></script>
 </head>
 <body style="background-color: #efefef">
 <div th:insert="navigation :: nav"></div>
@@ -20,6 +20,7 @@
                 <div class="form-group alert alert-danger" role="alert" th:if="${error}!=null">
                     <div th:text="${error}"></div>
                 </div>
+                <input type="hidden" name="id" th:value="${id}">
                 <div class="form-group">
                     <label>问题标题（简明扼要）：</label>
                     <input type="text" class="form-control" id="title" name="title" th:value="${title}" placeholder="问题标题" >

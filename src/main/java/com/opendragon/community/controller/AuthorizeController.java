@@ -2,17 +2,17 @@ package com.opendragon.community.controller;
 
 import com.opendragon.community.dto.AccessTokenDTO;
 import com.opendragon.community.dto.GithubUser;
-import com.opendragon.community.mapper.UserMapper;
 import com.opendragon.community.model.User;
 import com.opendragon.community.provider.GithubProvider;
+import com.opendragon.community.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.Serializable;
 import java.util.UUID;
@@ -28,13 +28,13 @@ public class AuthorizeController implements Serializable {
     private GithubProvider githubProvider;
 
     @Autowired
-    private UserMapper userMapper;
+    private UserService userService;
 
     @Value("${github.client.id}")
     private String clientId;
 
     @Value("${github.client.secret}")
-    private String clientSecrect;
+    private String clientSecret;
 
     @Value("${github.redirect.uri}")
     private String redirectUri;
@@ -46,7 +46,7 @@ public class AuthorizeController implements Serializable {
         // 获取 github 的 access token
         AccessTokenDTO accessTokenDTO = new AccessTokenDTO();
         accessTokenDTO.setClient_id(clientId);
-        accessTokenDTO.setClient_secret(clientSecrect);
+        accessTokenDTO.setClient_secret(clientSecret);
         accessTokenDTO.setCode(code);
         accessTokenDTO.setState(state);
         accessTokenDTO.setRedirect_uri(redirectUri);
@@ -57,19 +57,23 @@ public class AuthorizeController implements Serializable {
         if(githubUser != null){
             //登录成功
             User user = new User();
-            user.setName(githubUser.getName());
             String token = UUID.randomUUID().toString();
+            user.setName(githubUser.getName());
             user.setToken(token);
-            user.setAccountId(String.valueOf(githubUser.getId()));
-            user.setGmtCreate(System.currentTimeMillis());
-            user.setGmtModified(user.getGmtCreate());
             user.setAvatarUrl(githubUser.getAvatarUrl());
-            userMapper.insertUser(user);
+            user.setAccountId(String.valueOf(githubUser.getId()));
+            userService.createOrUpdateUser(user);
             response.addCookie(new Cookie("token", token));
-        }else{
-            //登录失败
         }
+        return "redirect:/";
+    }
 
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request, HttpServletResponse response){
+        Cookie cookie = new Cookie("token", null);
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+        request.getSession().invalidate();
         return "redirect:/";
     }
 }
