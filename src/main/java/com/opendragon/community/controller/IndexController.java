@@ -26,7 +26,7 @@ public class IndexController {
     public String index(Model model,
                         @RequestParam(name="page", required = false, defaultValue = "1") long page,
                         @RequestParam(name="size", required = false, defaultValue = "5") long size){
-        PageInformation pageInformation = questionService.list(page, size);
+        PageInformation pageInformation = questionService.findWithRowbounds(page, size);
 
         model.addAttribute("pageInformation", pageInformation);
 

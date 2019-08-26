@@ -8,3 +8,11 @@
     font-size: 13px;
     color: #999;
 }
+.error{
+    margin: 40px;
+}
+
+.btn-comment{
+    margin-bottom: 20px;
+    float: right;
+}

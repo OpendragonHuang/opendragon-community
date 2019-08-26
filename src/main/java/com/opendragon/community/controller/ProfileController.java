@@ -38,7 +38,7 @@ public class ProfileController {
         if(action.equals("questions")){
             model.addAttribute("section", "questions");
             model.addAttribute("sectionName", "我的问题");
-            pageInformation = questionService.listByCreator(user.getId(), page, size);
+            pageInformation = questionService.findWithRowboundsByCreatorId(user.getId(), page, size);
             model.addAttribute("pageInformation", pageInformation);
         }else if(action.equals("replies")){
             model.addAttribute("section", "replies");

@@ -25,7 +25,8 @@ public class QuestionController implements Serializable {
     @GetMapping("/question/{id}")
     public String question(@PathVariable("id") Integer id,
                             Model model){
-        QuestionDTO questionDTO = questionService.getQuestionById(id);
+        questionService.incrementViewCount(id);
+        QuestionDTO questionDTO = questionService.findDTOById(id);
         model.addAttribute("question", questionDTO);
         return "question";
     }
