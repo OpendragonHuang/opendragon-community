@@ -57,7 +57,9 @@ public class QuestionService {
     public PageInformation findWithRowbounds(long page, final long pageSize){
         long offset = (page-1)*pageSize;
         RowBounds rowBounds = new RowBounds((int)offset, (int)pageSize);
-        List<Question> questions = questionMapper.selectByExampleWithBLOBsWithRowbounds(null, rowBounds);
+        QuestionExample questionExample = new QuestionExample();
+        questionExample.setOrderByClause("gmt_modified desc");
+        List<Question> questions = questionMapper.selectByExampleWithBLOBsWithRowbounds(questionExample, rowBounds);
         ArrayList<QuestionDTO> questionDTOS = new ArrayList<>();
 
         for(Question question : questions){

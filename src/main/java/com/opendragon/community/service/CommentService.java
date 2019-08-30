@@ -1,18 +1,19 @@
 package com.opendragon.community.service;
 
+import com.opendragon.community.dto.CommentResponseDTO;
 import com.opendragon.community.enums.CommentTypeEnum;
 import com.opendragon.community.exception.CustomizeErrorCode;
 import com.opendragon.community.exception.CustomizeException;
-import com.opendragon.community.mapper.CommentMapper;
-import com.opendragon.community.mapper.QuestionExtMapper;
-import com.opendragon.community.mapper.QuestionMapper;
-import com.opendragon.community.model.Comment;
-import com.opendragon.community.model.Question;
+import com.opendragon.community.mapper.*;
+import com.opendragon.community.model.*;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author opendragonhuang
@@ -30,6 +31,12 @@ public class CommentService implements Serializable {
 
     @Autowired
     private CommentMapper commentMapper;
+
+    @Autowired
+    private CommentExtMapper commentExtMapper;
+
+    @Autowired
+    private UserMapper userMapper;
 
 
     @Transactional
@@ -58,8 +65,32 @@ public class CommentService implements Serializable {
             if(dbComment == null){
                 throw new CustomizeException(CustomizeErrorCode.COMMENT_NOT_FIND);
             }
+            dbComment.setSubCommentCount(1);
+            commentExtMapper.incSubCommentCount(dbComment);
             commentMapper.insert(comment);
         }
         return 0;
+    }
+
+    public List<CommentResponseDTO> findByParentId(Integer id, CommentTypeEnum typeEnum) {
+        CommentExample commentExample = new CommentExample();
+        commentExample.createCriteria()
+                .andParentIdEqualTo(id.longValue())
+                .andTypeEqualTo(typeEnum.getType());
+        List<Comment> comments = commentMapper.selectByExample(commentExample);
+        List<CommentResponseDTO> commentResponseDTOS = new ArrayList<>();
+        UserExample userExample = new UserExample();
+        for (Comment comment : comments) {
+            CommentResponseDTO commentResponseDTO = new CommentResponseDTO();
+            BeanUtils.copyProperties(comment, commentResponseDTO);
+            userExample.clear();
+            userExample.createCriteria().andIdEqualTo(comment.getCommentator());
+            List<User> userList = userMapper.selectByExample(userExample);
+            if(userList.size() > 0){
+                commentResponseDTO.setUser(userList.get(0));
+            }
+            commentResponseDTOS.add(commentResponseDTO);
+        }
+        return commentResponseDTOS;
     }
 }

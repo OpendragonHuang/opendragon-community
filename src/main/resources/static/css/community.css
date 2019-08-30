@@ -16,3 +16,36 @@
     margin-bottom: 20px;
     float: right;
 }
+.icon-size{
+    height: 38px;
+    width: 38px
+}
+.menu {
+    color: #999;
+    margin-top: 5px;
+}
+.menu .icon {
+    margin-right: 6px;
+    font-size: 15px;
+    cursor: pointer;
+}
+.pull-right {
+    float: right;
+}
+.comment-hr{
+    margin-top: 10px;
+    margin-bottom: 20px;
+    border: 0;
+    border-top: 1px solid #eee;
+}
+
+.sub-comment-style{
+    border: 1px solid #eee;
+    border-radius: 5px;
+    padding: 15px;
+    margin-top: 10px;
+}
+.btn-sub-comment{
+    margin-top: 10px;
+    float: right
+}

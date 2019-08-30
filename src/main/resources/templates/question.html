@@ -7,8 +7,18 @@
     <link rel="stylesheet" href="/css/bootstrap.min.css">
     <link rel="stylesheet" href="/css/bootstrap-theme.min.css">
     <link rel="stylesheet" href="/css/community.css">
+    <link rel="stylesheet" href="/css/editormd.preview.css" />
     <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/moment.js"></script>
     <script src="/js/community.js"></script>
+    <script src="/js/editormd.js"></script>
+    <script src="/lib/marked.min.js"></script>
+    <script src="/lib/prettify.min.js"></script>
+    <script src="/lib/raphael.min.js"></script>
+    <script src="/lib/underscore.min.js"></script>
+    <script src="/lib/sequence-diagram.min.js"></script>
+    <script src="/lib/flowchart.min.js"></script>
+    <script src="/lib/jquery.flowchart.min.js"></script>
 </head>
 <body style="background-color: #efefef">
 <div th:insert="navigation :: nav"></div>
@@ -23,7 +33,22 @@
                 阅读：<span th:text="${question.getViewCount()}"></span>
                 </span>
                 <hr/>
-                <span th:text="${question.getDescription()}"></span>
+                <div id="markdown-view" >
+                    <!-- Server-side output Markdown text -->
+                    <textarea style="display: none" th:text="${question.getDescription()}"></textarea>
+                </div>
+                <script type="text/javascript">
+                    $(function() {
+                        var markdownView = editormd.markdownToHTML("markdown-view", {
+                            htmlDecode      : "style,script,iframe",  // you can filter tags decode
+                            emoji           : true,
+                            taskList        : true,
+                            tex             : true,  // 默认不解析
+                            flowChart       : true,  // 默认不解析
+                            sequenceDiagram : true,  // 默认不解析
+                        });
+                    });
+                </script>
                 <hr/>
                 <a th:if="${session.user != null && session.user.getId() == question.getCreator()}" th:href="@{'/publish/'+${question.getId()}}">
                     <span class="glyphicon glyphicon-pencil community-menu">编辑</span>
@@ -31,15 +56,54 @@
                 <hr/>
             </div>
 
+            <div id="comment" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <h4><span th:text="${question.commentCount}"></span>个回复</h4>
+                <hr/>
+                <div th:each="comment : ${comments}">
+                    <div class="media" style="margin-top: 15px">
+                        <div class="media-left">
+                            <a href="#">
+                                <img class="media-object img-rounded icon-size" th:src="${comment.getUser().getAvatarUrl()}">
+                            </a>
+                        </div>
+                        <div class="media-body">
+                            <h5 class="media-heading"><span th:text="${comment.getUser().getName()}"></span></h5>
+                            <span th:text="${comment.getComment()}"></span>
+                            <div class="menu">
+                                <span class="glyphicon glyphicon-thumbs-up icon"></span>
+                                <span class="icon" th:data-id="${comment.id}" onclick="collapseComments(this)">
+                                    <span class="glyphicon glyphicon-comment"></span>
+                                    <span th:text="${comment.getSubCommentCount()}"></span>
+                                </span>
+                                <span class="pull-right" th:text="${#dates.format(comment.getGmtModified(), 'yyyy-MM-dd')}"></span>
+                            </div>
+                            <div th:id="${'sub_comment_id_'+comment.id}" class="col-xs-12 col-sm-12 col-md-12 col-lg-12 collapse sub-comment-style">
+                                <!--二级评论-->
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                    <input th:id="${'sub_comment_content_'+comment.id}" class="form-control" type="text" placeholder="评论一下">
+                                    <button th:data-id="${comment.id}" type="button" class="btn btn-success btn-sub-comment" onclick="replySubComment(this)">评论</button>
+                                </div>
+                            </div>
+                        </div>
+                        <hr class="comment-hr"/>
+                    </div>
+                </div>
 
-            <div id="comment_div" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            </div>
+
+            <!-- 回复-->
+            <div id="reply_comment" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <h4>提交回复</h4>
+                <hr/>
                 <div style="margin-top: 10px;margin-bottom: 10px;">
-                    <img class="img-rounded" th:src="${question.getUser().getAvatarUrl()}" alt="..." style="height: 55px;width: 55px">
+                    <img class="img-rounded icon-size" th:src="${question.getUser().getAvatarUrl()}">
                     <span th:text="${question.getUser().getName()}"></span>
                 </div>
-                <input id="comment_parent_id" type="hidden" th:value="${question.getId()}">
-                <textarea id="comment_content" style="margin-top: 20px;margin-bottom: 10px;" class="form-control" rows="6"></textarea>
-                <button type="button" class="btn btn-success btn-comment" onclick="comment_submit()">回复</button>
+                <div>
+                    <input id="comment_parent_id" type="hidden" th:value="${question.getId()}">
+                    <textarea id="comment_content" style="margin-top: 20px;margin-bottom: 10px;" class="form-control" rows="6"></textarea>
+                    <button type="button" class="btn btn-success btn-comment" onclick="replyComment()">回复</button>
+                </div>
             </div>
         </div>
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-3">
@@ -47,7 +111,7 @@
             <h3>发起者</h3>
             <hr  class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
             <div>
-                <img class="img-rounded" th:src="${question.getUser().getAvatarUrl()}" alt="..." style="height: 55px;width: 55px">
+                <img class="img-rounded icon-size" th:src="${question.getUser().getAvatarUrl()}">
                 <span th:text="${question.getUser().getName()}"></span>
             </div>
             <hr  class="col-xs-12 col-sm-12 col-md-12 col-lg-12">

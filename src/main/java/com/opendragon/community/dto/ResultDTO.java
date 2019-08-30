@@ -16,6 +16,7 @@ public class ResultDTO implements Serializable {
     private static final long serialVersionUID = 1L;
     private Integer code;
     private String message;
+    private Object data;
 
 
     public ResultDTO(Integer code, String message) {
@@ -23,8 +24,19 @@ public class ResultDTO implements Serializable {
         this.message = message;
     }
 
+    public ResultDTO(Integer code, String message, Object data) {
+        this.code = code;
+        this.message = message;
+        this.data = data;
+    }
+
     public static ResultDTO getInstance(Integer code, String message){
         ResultDTO resultDTO = new ResultDTO(code, message);
+        return resultDTO;
+    }
+
+    public static ResultDTO getInstance(Integer code, String message, Object data){
+        ResultDTO resultDTO = new ResultDTO(code, message, data);
         return resultDTO;
     }
 
@@ -34,5 +46,9 @@ public class ResultDTO implements Serializable {
 
     public static ResultDTO ok(ICustomizeErrorCode ok){
         return getInstance(ok.getCode(), ok.getMessage());
+    }
+
+    public static ResultDTO ok(ICustomizeErrorCode ok, Object data){
+        return getInstance(ok.getCode(), ok.getMessage(), data);
     }
 }
