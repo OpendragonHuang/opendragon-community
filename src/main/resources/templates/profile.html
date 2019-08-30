@@ -19,15 +19,12 @@
             <div th:each="question : ${pageInformation.getQuestionDTOs()}">
                 <div class="media" style="margin-top: 15px">
                     <div class="media-left media-middle">
-                        <a href="#">
-                            <img class="media-object" th:src="${question.getUser().getAvatarUrl()}" alt="..." style="height: 55px;width: 55px">
-                        </a>
+                        <img class="media-object img-rounded icon-size" th:src="${question.getUser().getAvatarUrl()}">
                     </div>
                     <div class="media-body">
                         <a th:href="@{'/question/'+${question.getId()}}">
                             <h4 class="media-heading" th:text="${question.getTitle()}"></h4>
                         </a>
-                        <span th:text="${question.getDescription()}"></span></span><br>
                         <span class="text-desc">
                             <span th:text="${question.getCommentCount()}"></span>个回复 •
                             <span th:text="${question.getViewCount()}"></span> 次浏览 •
