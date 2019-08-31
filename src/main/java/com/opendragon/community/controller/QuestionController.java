@@ -34,8 +34,10 @@ public class QuestionController implements Serializable {
                             Model model){
         questionService.incrementViewCount(id);
         QuestionDTO questionDTO = questionService.findDTOById(id);
+        List<QuestionDTO> relatedQuestionDTOList = questionService.selectRelated(questionDTO);
         List<CommentResponseDTO> commentResponseDTOList = commentService.findByParentId(id, CommentTypeEnum.QUESTION);
         model.addAttribute("question", questionDTO);
+        model.addAttribute("relatedQuestions", relatedQuestionDTOList);
         model.addAttribute("comments", commentResponseDTOList);
         return "question";
     }

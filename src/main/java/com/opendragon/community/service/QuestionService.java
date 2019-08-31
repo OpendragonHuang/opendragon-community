@@ -4,6 +4,7 @@ import com.opendragon.community.exception.CustomizeErrorCode;
 import com.opendragon.community.exception.CustomizeException;
 import com.opendragon.community.dto.PageInformation;
 import com.opendragon.community.dto.QuestionDTO;
+import com.opendragon.community.mapper.QuestionExtMapper;
 import com.opendragon.community.mapper.QuestionMapper;
 import com.opendragon.community.mapper.UserMapper;
 import com.opendragon.community.model.Question;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @Author opend
@@ -25,6 +27,9 @@ import java.util.List;
 public class QuestionService {
     @Autowired
     private QuestionMapper questionMapper;
+
+    @Autowired
+    private QuestionExtMapper questionExtMapper;
 
     @Autowired
     private UserMapper userMapper;
@@ -114,5 +119,23 @@ public class QuestionService {
         Question oldQuestion = questionMapper.selectByPrimaryKey(id);
         oldQuestion.setViewCount(oldQuestion.getViewCount()+1);
         questionMapper.updateByPrimaryKeySelective(oldQuestion);
+    }
+
+    public List<QuestionDTO> selectRelated(QuestionDTO queryQuestionDTO) {
+        if (queryQuestionDTO.getTag() == null){
+            return new ArrayList<QuestionDTO>();
+        }
+
+        Question question = new Question();
+        question.setId(queryQuestionDTO.getId());
+        question.setTag(queryQuestionDTO.getTag().replace(',', '|'));
+        List<Question> questionList = questionExtMapper.selectRelated(question);
+
+        List<QuestionDTO> questionDTOList = questionList.stream().map(q -> {
+            QuestionDTO questionDTO = new QuestionDTO();
+            BeanUtils.copyProperties(q, questionDTO);
+            return questionDTO;
+        }).collect(Collectors.toList());
+        return questionDTOList;
     }
 }

@@ -94,3 +94,23 @@ function collapseComments(e) {
         }
     }
 }
+
+function displayTagsNav(isDisplay) {
+    if(isDisplay){
+        $('#tags').show();
+    }else{
+        $('#tags').hide();
+    }
+}
+
+function addTag(e) {
+    var tagName = e.firstElementChild.innerText;
+    var tag = $('#tag');
+    if(tag.val().indexOf(tagName) < 0){
+        if(tag.val().length == 0){
+            tag.val(tagName);
+        }else{
+            tag.val(tag.val()+','+tagName);
+        }
+    }
+}

@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="/css/bootstrap.min.css">
     <link rel="stylesheet" href="/css/bootstrap-theme.min.css">
     <link rel="stylesheet" href="/css/editormd.min.css" />
+    <script src="/js/community.js"></script>
     <script src="/js/bootstrap.min.js"></script>
     <script src="/js/editormd.min.js"></script>
     <script src="/lib/marked.min.js"></script>
@@ -27,40 +28,70 @@
             <h2><span class="glyphicon glyphicon-plus" aria-hidden="true">发起</span></h2>
             <hr/>
             <form action="/publish" method="post">
-                <div class="form-group alert alert-danger" role="alert" th:if="${error}!=null">
-                    <div th:text="${error}"></div>
-                </div>
-                <input type="hidden" name="id" th:value="${id}">
-                <div class="form-group">
-                    <label>问题标题（简明扼要）：</label>
-                    <input type="text" class="form-control" id="title" name="title" th:value="${title}" placeholder="问题标题" >
-                </div>
-                <div class="form-group">
-                    <label>问题补充（必填，请参照右侧提示）：</label>
-                    <div id="editor">
-                        <textarea id="description" style="display:none;" name="description" cols="30" rows="10" th:text="${description}"></textarea>
+                <div onmouseover="displayTagsNav(false)">
+                    <div class="form-group alert alert-danger" role="alert" th:if="${error}!=null">
+                        <div th:text="${error}"></div>
                     </div>
-                    <script type="text/javascript">
-                        $(function() {
-                            var editor = editormd("editor", {
-                                width: "100%",
-                                height: "500px",
-                                watch: false,
-                                path : "/lib/",
-                                htmlDecode      : "style,script,iframe",  // you can filter tags decode
-                                emoji           : true,
-                                taskList        : true,
-                                tex             : true,  // 默认不解析
-                                flowChart       : true,  // 默认不解析
-                                sequenceDiagram : true,  // 默认不解析
+                    <input type="hidden" name="id" th:value="${id}">
+                    <div class="form-group">
+                        <label>问题标题（简明扼要）：</label>
+                        <input type="text" class="form-control" id="title" name="title" th:value="${title}" placeholder="问题标题" >
+                    </div>
+                    <div class="form-group">
+                        <label>问题补充（必填，请参照右侧提示）：</label>
+                        <div id="editor">
+                            <textarea id="description" style="display:none;" name="description" cols="30" rows="10" th:text="${description}"></textarea>
+                        </div>
+                        <script type="text/javascript">
+                            $(function() {
+                                var editor = editormd("editor", {
+                                    width: "100%",
+                                    height: "400px",
+                                    watch: false,
+                                    path : "/lib/",
+                                    htmlDecode      : "style,script,iframe",  // you can filter tags decode
+                                    emoji           : true,
+                                    taskList        : true,
+                                    tex             : true,  // 默认不解析
+                                    flowChart       : true,  // 默认不解析
+                                    sequenceDiagram : true,  // 默认不解析
+                                });
                             });
-                        });
-                    </script>
+                        </script>
+                    </div>
                 </div>
-                <div class="form-group">
+                <div class="form-group" onmouseover="displayTagsNav(true)">
                     <label>添加标签：</label>
                     <input type="text" class="form-control" id="tag" name="tag" th:value="${tag}" placeholder="输入标签，以逗号隔开">
+                    <div id="tags" style="display: none">
+                        <!-- Nav tabs -->
+                        <ul class="nav nav-tabs" role="tablist" style="margin-top: 10px">
+                            <li role="presentation" th:each="tagClass, state:${tags.keySet()}" th:class="${state.first ? 'active':''}">
+                                <a th:href="@{'#'+${tagClass}}" th:text="${tagClass}" th:attr="aria-controls=${tagClass}" role="tab" data-toggle="tab"></a>
+                            </li>
+<!--                            <li role="presentation"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Home</a></li>-->
+<!--                            <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Profile</a></li>-->
+<!--                            <li role="presentation"><a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">Messages</a></li>-->
+<!--                            <li role="presentation"><a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">Settings</a></li>-->
+                        </ul>
+                        <!-- Tab panes -->
+                        <div class="tab-content" style="margin:5px">
+                            <div th:each="entry, state:${tags}" role="tabpanel" th:class="${state.first ? 'tab-pane active':'tab-pane'}" th:id="${entry.key}">
+                                <span class="label label-info" style="font-size: 13px;margin-right: 10px;" th:each="value:${entry.value}">
+                                        <span class="glyphicon glyphicon-tags" onclick="addTag(this)">
+                                            <span th:text="${value.name}"></span>
+                                        </span>
+                                </span>
+                            </div>
+
+<!--                            <div role="tabpanel" class="tab-pane active" id="home">home</div>-->
+<!--                            <div role="tabpanel" class="tab-pane" id="profile">profile</div>-->
+<!--                            <div role="tabpanel" class="tab-pane" id="messages">messages</div>-->
+<!--                            <div role="tabpanel" class="tab-pane" id="settings">settings</div>-->
+                        </div>
+                    </div>
                 </div>
+
                 <button type="submit" class="btn btn-success " style="float: right;margin: 15px">Submit</button>
             </form>
 

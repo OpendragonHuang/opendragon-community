@@ -1,5 +1,6 @@
 package com.opendragon.community.controller;
 
+import com.opendragon.community.cache.TagsCache;
 import com.opendragon.community.mapper.QuestionMapper;
 import com.opendragon.community.mapper.UserMapper;
 import com.opendragon.community.model.Question;
@@ -40,11 +41,13 @@ public class PublishController {
         model.addAttribute("description", question.getDescription());
         model.addAttribute("tag", question.getTag());
         model.addAttribute("id", question.getId());
+        model.addAttribute("tags", TagsCache.getCache());
         return "publish";
     }
 
     @GetMapping("/publish")
-    public String publish(HttpServletRequest request){
+    public String publish(HttpServletRequest request, Model model){
+        model.addAttribute("tags", TagsCache.getCache());
         return "publish";
     }
 

@@ -24,12 +24,11 @@
         <javaClientGenerator type="XMLMAPPER" targetPackage="com.opendragon.community.mapper"  targetProject="src/main/java">
             <property name="enableSubPackages" value="true" />
         </javaClientGenerator>
-        <table tableName="user" domainObjectName="User" >
-        </table>
-        <table tableName="question" domainObjectName="Question" >
-        </table>
-        <table tableName="comment" domainObjectName="Comment" >
-        </table>
+        <table tableName="user" domainObjectName="User" ></table>
+        <table tableName="question" domainObjectName="Question" ></table>
+        <table tableName="comment" domainObjectName="Comment" ></table>
+        <table tableName="tag" domainObjectName="Tag" ></table>
+        <table tableName="tag_class" domainObjectName="TagClass" ></table>
 
     </context>
 </generatorConfiguration>
